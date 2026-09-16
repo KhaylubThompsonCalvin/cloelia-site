@@ -76,8 +76,17 @@ test('feeds, sitemap, and robots exist and are well formed', async ({ request })
   expect(Array.isArray(body.items)).toBe(true);
   const robots = await request.get('/robots.txt');
   expect(robots.status()).toBe(200);
+  const robotsText = await robots.text();
   const sitemap = await request.get('/sitemap-index.xml');
-  expect(sitemap.status()).toBe(200);
+  if (robotsText.includes('Disallow: /')) {
+    // Preview build: nothing indexable, so no sitemap is emitted and none is advertised.
+    expect(robotsText).not.toContain('Sitemap:');
+    expect(sitemap.status()).toBe(404);
+  } else {
+    expect(robotsText).toContain('Sitemap:');
+    expect(sitemap.status()).toBe(200);
+    expect(await sitemap.text()).toContain('<sitemapindex');
+  }
 });
 
 test('security headers from the Blueprint are served', async ({ request }) => {
