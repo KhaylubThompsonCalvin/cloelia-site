@@ -1,0 +1,56 @@
+{
+  "slug": "fixture-rate",
+  "name": "Fixture rate",
+  "definition": "The publisher's definition in its own terms.",
+  "unit": "percent",
+  "population": "all households",
+  "dataset": "ds-fixture",
+  "cell": 14,
+  "years": {
+    "from": 1900,
+    "to": 1910
+  },
+  "gaps": [
+    1910
+  ],
+  "definition_changes": [],
+  "geographies": [
+    "fixture-state",
+    "united-states"
+  ],
+  "investigation": "000-fixture",
+  "rows": [
+    {
+      "year": 1900,
+      "geography": "fixture-state",
+      "population": "all-households",
+      "value": 10,
+      "unit": "percent",
+      "definition_version": "v1"
+    },
+    {
+      "year": 1910,
+      "geography": "fixture-state",
+      "population": "all-households",
+      "value": 12.5,
+      "unit": "percent",
+      "definition_version": "v1"
+    },
+    {
+      "year": 1900,
+      "geography": "united-states",
+      "population": "all-households",
+      "value": 9,
+      "unit": "percent",
+      "definition_version": "v1"
+    },
+    {
+      "year": 1910,
+      "geography": "united-states",
+      "population": "all-households",
+      "value": null,
+      "unit": "percent",
+      "definition_version": "v1"
+    }
+  ]
+}

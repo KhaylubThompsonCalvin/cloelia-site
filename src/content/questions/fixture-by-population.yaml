@@ -1,0 +1,5 @@
+record: { dimension: owning-a-home, place: fixture-state }
+text: Who held the rate, by population (fixture question)?
+status: insufficient-evidence
+asked: "2026-09-16"
+note: Looked for in the fixture table; a disaggregated table would answer it.

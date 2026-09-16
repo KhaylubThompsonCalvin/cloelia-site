@@ -1,0 +1,11 @@
+dimension: owning-a-home
+place: fixture-state
+period: { from: 1900, to: 1910 }
+covers: all households (occupied housing units)
+not_covered:
+  - tenure by population
+  - counties
+measures: [fixture-rate]
+headline_finding: "000-fixture:F1"
+status: staging
+chronicle_note: Fixture chronicle; three placeholder developments so every template renders.

@@ -1,0 +1,10 @@
+name: Owning a home
+definition: The practical ability to acquire, hold, and keep a dwelling.
+not_covered:
+  - affordability on its own
+  - tenure security
+  - housing quality
+candidate_measures:
+  - name: Homeownership rate (owner-occupied share of occupied housing units), by state and decade
+    source: Census Bureau, Historical Census of Housing Tables, Homeownership
+lens: [housing, economic]

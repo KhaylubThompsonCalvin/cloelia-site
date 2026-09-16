@@ -1,0 +1,34 @@
+{
+  "contract_version": "1.0.0",
+  "id": "000-fixture",
+  "number": 0,
+  "question": "Fixture question: how did a placeholder rate change?",
+  "hypothesis": "Written before the data: it rose.",
+  "level": 1,
+  "new_skills": [
+    "a published table into tidy rows"
+  ],
+  "status": "verified",
+  "dates": {
+    "opened": "2026-09-16",
+    "verified": "2026-09-16"
+  },
+  "notebook": "notebook.ipynb",
+  "verification": {
+    "run_all_sequential": true,
+    "zero_errors": true,
+    "raw_hashes_match": true,
+    "checked_on": "2026-09-16"
+  },
+  "raw_files": [
+    {
+      "path": "data/raw/fixture-table.csv",
+      "sha256": "0e7d9e816f5f1025d33da7466e0bf947126bfee2a8d1ef20ba82acd1795ff6dd"
+    }
+  ],
+  "assistance": "Claude Code scaffolded the folder and audited read-only.",
+  "record": {
+    "dimension": "owning-a-home",
+    "place": "fixture-state"
+  }
+}

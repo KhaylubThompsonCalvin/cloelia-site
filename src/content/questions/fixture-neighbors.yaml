@@ -1,0 +1,5 @@
+record: { dimension: owning-a-home, place: fixture-state }
+text: How did the rate compare with neighboring states (fixture question)?
+status: in-investigation
+investigation: 000-fixture
+asked: "2026-09-16"

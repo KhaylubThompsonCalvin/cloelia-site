@@ -1,0 +1,21 @@
+{
+  "slug": "fixture-rate",
+  "name": "Fixture rate",
+  "definition": "The publisher's definition in its own terms.",
+  "unit": "percent",
+  "population": "",
+  "dataset": "ds-fixture",
+  "cell": 14,
+  "years": {
+    "from": 1900,
+    "to": 1910
+  },
+  "gaps": [
+    1910
+  ],
+  "definition_changes": [],
+  "geographies": [
+    "fixture-state",
+    "united-states"
+  ]
+}

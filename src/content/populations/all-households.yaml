@@ -1,0 +1,3 @@
+name: All households
+definition: Every occupied housing unit, as the census counts them; one household per occupied unit.
+source_terms: occupied housing units; householder

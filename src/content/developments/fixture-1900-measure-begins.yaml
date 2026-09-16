@@ -1,0 +1,6 @@
+record: { dimension: owning-a-home, place: fixture-state }
+date: "1900"
+kind: measure-begins
+text: The decennial census records whether each occupied dwelling is owned or rented (fixture entry).
+applies_to: [all-households]
+sources: [fixture-census-narrative]

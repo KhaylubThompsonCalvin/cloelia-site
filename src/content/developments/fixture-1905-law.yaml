@@ -1,0 +1,6 @@
+record: { dimension: owning-a-home, place: fixture-state }
+date: "1905"
+kind: law
+text: The state enacted a placeholder statute (fixture entry; the real Record cites the statute in its own terms).
+applies_to: [all-households]
+sources: [fixture-statute]

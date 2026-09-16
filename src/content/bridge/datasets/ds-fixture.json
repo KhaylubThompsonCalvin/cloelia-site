@@ -1,0 +1,17 @@
+{
+  "dataset_id": "ds-fixture",
+  "publisher": "Fixture Bureau",
+  "name": "Fixture historical table",
+  "url": "https://example.invalid/fixture",
+  "retrieved": "2026-09-16",
+  "years": {
+    "from": 1900,
+    "to": 1910
+  },
+  "geography": "states",
+  "format": "csv",
+  "sha256": "0e7d9e816f5f1025d33da7466e0bf947126bfee2a8d1ef20ba82acd1795ff6dd",
+  "license": "public domain",
+  "notes": "",
+  "investigation": "000-fixture"
+}

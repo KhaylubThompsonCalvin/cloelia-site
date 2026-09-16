@@ -1,0 +1,13 @@
+{
+  "slug": "fixture-rate-line",
+  "file": "fixture-rate-line.svg",
+  "title": "Fixture rate, 1900 to 1910",
+  "description": "Two lines over two decades; the United States value for 1910 is a gap and is not drawn.",
+  "measures": [
+    "fixture-rate"
+  ],
+  "has_chronicle_marks": true,
+  "caption": "Marks on the axis are chronicle entries; co-occurrence is not cause.",
+  "investigation": "000-fixture",
+  "public_path": "/charts/000-fixture/fixture-rate-line.svg"
+}

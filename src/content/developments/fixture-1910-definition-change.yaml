@@ -1,0 +1,6 @@
+record: { dimension: owning-a-home, place: fixture-state }
+date: "1910"
+kind: definition-change
+text: The fixture table carries no value for the United States in 1910; the gap is shown, not estimated.
+applies_to: [all-households]
+sources: [fixture-census-narrative]

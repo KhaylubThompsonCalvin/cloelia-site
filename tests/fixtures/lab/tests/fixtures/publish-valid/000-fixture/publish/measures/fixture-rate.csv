@@ -1,0 +1,5 @@
+year,geography,population,value,unit,definition_version
+1900,fixture-state,all-households,10.0,percent,v1
+1910,fixture-state,all-households,12.5,percent,v1
+1900,united-states,all-households,9.0,percent,v1
+1910,united-states,all-households,,percent,v1
