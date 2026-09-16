@@ -1,6 +1,7 @@
 ---
 // The one layout. Every page: skip link, header with the five sections, main, footer.
 // Preview builds (PUBLIC_SITE_ENV=preview) add noindex and a banner; production adds nothing.
+import '../styles/fonts.css';
 import '../styles/tokens.css';
 import '../styles/base.css';
 export interface Props { title: string; description: string; current?: string }
@@ -22,9 +23,8 @@ const nav = [
     <title>{title} | CLOELIA.AI</title>
     <meta name="description" content={description} />
     {isPreview && <meta name="robots" content="noindex, nofollow" />}
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Public+Sans:wght@400;600&display=swap" />
+    <link rel="preload" href="/fonts/newsreader-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/public-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="alternate" type="application/rss+xml" title="CLOELIA.AI" href="/feed.xml" />
     <link rel="alternate" type="application/feed+json" title="CLOELIA.AI" href="/feed.json" />
