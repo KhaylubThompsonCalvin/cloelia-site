@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.astro/
+playwright-report/
+test-results/
+.lighthouseci/
+.claude/verify-stamp.json
+.DS_Store
+Thumbs.db

@@ -1,0 +1,37 @@
+{
+  "name": "cloelia-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "CLOELIA.AI: a public reference that measures how people's practical freedoms changed. Static site; content from the lab's artifact contract.",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "build:preview": "cross-env PUBLIC_SITE_ENV=preview astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "bridge": "node scripts/bridge.mjs",
+    "validate": "node scripts/validate.mjs",
+    "serve:headers": "node scripts/serve-with-headers.mjs",
+    "test": "playwright test",
+    "test:unit": "node --test tests/unit/*.test.mjs",
+    "lhci": "npx --yes @lhci/cli@0.15.1 autorun"
+  },
+  "engines": {
+    "node": ">=22.14.0"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.3.3",
+    "js-yaml": "^5.4.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0",
+    "cross-env": "^10.1.0",
+    "html-validate": "^10.9.0",
+    "typescript": "^6.0.3"
+  }
+}
