@@ -26,7 +26,7 @@ jobs:
         run: npm run test:unit
         env:
           LAB_DIR: ${{ github.workspace }}/tests/fixtures/lab
-      - name: Build (preview: noindex, banner)
+      - name: "Build (preview: noindex, banner)"
         run: npm run build:preview
       - name: Validation against the built output
         run: npm run validate

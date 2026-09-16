@@ -114,6 +114,12 @@ for (const [id, c] of corrections) {
 const lock = join(root, 'bridge.lock.json');
 if (!existsSync(lock)) fail('bridge.lock.json', 'missing: run npm run bridge');
 
+
+// 2b. every YAML file that a machine will parse must parse (a GitHub workflow with an unquoted colon fails
+// silently on the server: the run shows no jobs at all)
+for (const f of [...walk(join(root, '.github')), join(root, 'render.yaml')].filter((p) => /.ya?ml$/.test(p))) {
+  try { yamlLoad(readFileSync(f, 'utf8')); } catch (e) { fail(rel(f), 'does not parse as YAML: ' + String(e.message).split(String.fromCharCode(10))[0]); }
+}
 // 3. the built output, when present
 const dist = join(root, 'dist');
 if (existsSync(dist)) {
