@@ -6,7 +6,7 @@ import { join } from 'node:path';
 
 const out = process.argv[2] || 'shots';
 mkdirSync(out, { recursive: true });
-const base = 'http://localhost:4321';
+const base = process.env.SHOTS_BASE || 'http://localhost:4321';
 const pages = [
   ['home', '/'],
   ['record', '/records/owning-a-home/fixture-state/'],

@@ -130,8 +130,8 @@ dl.facts dt { color: var(--ink-2); } dl.facts dd { margin: 0; overflow-wrap: any
 .record-section > h2 { font-size: var(--size-4); }
 @media (max-width: 640px) { .record-section > h2 { font-size: var(--size-3); } }
 details.more { margin: var(--s-3) 0 0; }
-details.more > summary { font-family: var(--font-ui); font-size: var(--size-1); font-weight: 600; cursor: pointer; min-height: var(--target); display: inline-flex; align-items: center; gap: var(--s-2); color: var(--ink); }
-details.more > summary::-webkit-details-marker { color: var(--ink-2); }
+details.more > summary { font-family: var(--font-ui); font-size: var(--size-1); font-weight: 600; cursor: pointer; padding: 4px 0; display: list-item; list-style: disclosure-closed inside; color: var(--ink); }
+details.more[open] > summary { list-style-type: disclosure-open; }
 details.more[open] > summary { margin-bottom: var(--s-2); }
 details.more .body { font-family: var(--font-ui); font-size: var(--size-1); color: var(--ink-2); line-height: 1.5; }
 details.more .body p { margin: 0 0 var(--s-2); }
@@ -152,7 +152,8 @@ details.more .body p { margin: 0 0 var(--s-2); }
 .measure .line { font-family: var(--font-ui); font-size: var(--size-1); color: var(--ink-2); margin: 0 0 var(--s-3); }
 .measure figure { margin: var(--s-3) 0; padding: var(--s-3); background: var(--paper); }
 .figure img { display: block; width: 100%; max-width: 48rem; }
-.data-table summary { font-family: var(--font-ui); font-size: var(--size-1); font-weight: 600; cursor: pointer; min-height: var(--target); display: inline-flex; align-items: center; }
+.data-table summary { font-family: var(--font-ui); font-size: var(--size-1); font-weight: 600; cursor: pointer; padding: 4px 0; display: list-item; list-style: disclosure-closed inside; }
+.data-table[open] summary { list-style-type: disclosure-open; }
 .data-table table { margin-top: var(--s-3); max-width: 48rem; }
 .measure dl.facts { margin: var(--s-2) 0 0; }
 
