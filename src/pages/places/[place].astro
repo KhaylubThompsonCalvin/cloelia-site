@@ -1,22 +1,33 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { loadAll, recordPath } from '../../lib/content';
+import EvidenceBadge from '../../components/EvidenceBadge.astro';
+import { loadAll, nameMap, recordPath, findingByRef } from '../../lib/content';
 export async function getStaticPaths() {
   const { places } = await loadAll();
   return places.map((p) => ({ params: { place: p.id }, props: { place: p } }));
 }
 const { place } = Astro.props;
 const all = await loadAll();
+const placeNames = nameMap(all.places);
 const records = all.records.filter((r) => r.data.place === place.id && r.data.status !== 'draft');
 const dimName = (id: string) => all.dimensions.find((d) => d.id === id)?.data.name ?? id;
+const LEVEL: Record<string, string> = { country: 'Country', state: 'State', county: 'County', city: 'City' };
 ---
 <Base title={place.data.name} description={`Records for ${place.data.name} on CLOELIA.AI.`} current="places">
   <p class="crumbs"><a href="/places/">Places</a> / {place.data.name}</p>
+  <p class="label">{LEVEL[place.data.level]}{place.data.parent ? `, ${placeNames.get(place.data.parent)}` : ''}</p>
   <h1>{place.data.name}</h1>
-  <p class="small muted">Level: {place.data.level}.</p>
   <section class="section" aria-labelledby="h-records">
     <h2 id="h-records">Records</h2>
-    {records.length ? <ul class="plain">{records.map((r) => <li><a href={recordPath(r.data.dimension, r.data.place)}>{dimName(r.data.dimension)}, {r.data.period.from} to {r.data.period.to}</a></li>)}</ul> : <p class="muted">No Records yet for this place.</p>}
+    {records.length ? (
+      <ul class="cards">{records.map((r) => { const h = findingByRef(all.findings, r.data.headline_finding); return (
+        <li class="card tile">
+          <h3><a href={recordPath(r.data.dimension, r.data.place)}>{dimName(r.data.dimension)}</a></h3>
+          <p>{r.data.period.from} to {r.data.period.to}; covers {r.data.covers}</p>
+          {h.item && <EvidenceBadge grade={h.item.grade} />}
+          <div class="foot"><span class="chip">{r.data.measures.length} measure{r.data.measures.length === 1 ? '' : 's'}</span><a class="go" href={recordPath(r.data.dimension, r.data.place)}>Explore Record</a></div>
+        </li>); })}</ul>
+    ) : <p class="muted">No Records yet for this place.</p>}
   </section>
   <section class="section" aria-labelledby="h-bounds">
     <h2 id="h-bounds">Boundary notes</h2>

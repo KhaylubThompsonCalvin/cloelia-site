@@ -8,7 +8,7 @@ for (const t of TEMPLATES) {
     await expect(page.locator('a.skip')).toHaveAttribute('href', '#main');
     await expect(page.locator('header .brand')).toContainText('CLOELIA.AI');
     const nav = page.locator('nav.site-nav a');
-    await expect(nav).toHaveText(['Freedoms', 'Places', 'Investigations', 'Questions', 'About']);
+    await expect(nav).toHaveText(['Freedoms', 'Places', 'Questions', 'Behind the numbers', 'About']);
     await expect(page.locator('main#main')).toBeVisible();
     await expect(page.locator('h1')).toHaveCount(1);
     expect(await page.locator('html').getAttribute('lang')).toBe('en');
@@ -20,14 +20,16 @@ test('the Record keeps the fixed order and the scan block', async ({ page }) => 
   await page.goto(RECORD);
   const scan = page.locator('[data-test="scan"]');
   await expect(scan.locator('[data-test="scan-dimension"]')).toHaveText('Owning a home');
-  await expect(scan.locator('h1')).toContainText('Fixture State, 1900 to 1910');
-  await expect(scan.locator('[data-test="scan-population"]')).toContainText('Covers all households');
-  await expect(scan.locator('[data-test="scan-change"] .chip')).toHaveText('Measured');
+  await expect(scan.locator('h1')).toContainText('Fixture State');
+  await expect(scan.locator('h1')).toContainText('1900 to 1910');
+  await expect(scan.locator('[data-test="scan-population"]')).toContainText('all households');
+  await expect(scan.locator('.badge.grade')).toHaveText('Measured');
+  await expect(scan.locator('[data-test="scan-change"]')).not.toBeEmpty();
   await expect(scan.locator('[data-test="scan-unknown"]')).toContainText('Still unknown');
   const ids = await page.locator('main > section[id]').evaluateAll((els) => els.map((e) => e.id));
   expect(ids).toEqual(['changed', 'happened', 'followed', 'concluded', 'unknown', 'verify', 'related']);
   const headings = await page.locator('main > section > h2').allTextContents();
-  expect(headings.map((h) => h.trim())).toEqual(['1. What changed', '2. What happened', '3. What followed', '4. What can be concluded', '5. What is still unknown', '6. Verify', '7. Related Records']);
+  expect(headings.map((h) => h.trim())).toEqual(['What changed', 'What happened', 'What followed', 'What can be concluded', 'What is still unknown', 'Verify', 'Related Records']);
 });
 
 test('every finding shows its grade first, every development its source and population, every measure its dataset and investigation', async ({ page }) => {
@@ -60,7 +62,7 @@ test('verify layer: source and dataset pages reachable from the Record in one cl
   await expect(page).toHaveURL(/\/sources\//);
   await expect(page.locator('h1')).toBeVisible();
   await page.goBack();
-  await page.locator('section.measure a[href^="/datasets/"]').first().click();
+  await page.locator('nav.rail a', { hasText: 'Dataset' }).click();
   await expect(page).toHaveURL(/\/datasets\//);
   await expect(page.locator('dl.facts')).toContainText('SHA-256');
 });

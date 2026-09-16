@@ -1,0 +1,8 @@
+name: Making personal choices
+definition: The practical ability to marry, form a household, and make family and personal decisions.
+not_covered:
+  - private life beyond public record
+candidate_measures:
+  - name: Marriage and household-formation measures
+    source: Census
+lens: [social]

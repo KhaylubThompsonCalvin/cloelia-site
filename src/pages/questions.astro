@@ -8,9 +8,13 @@ const qs = [...all.questions].sort((a, b) => b.data.asked.localeCompare(a.data.a
 ---
 <Base title="Open questions" description="The public backlog: every question a Record could not yet answer, with its status." current="questions">
   <h1>Open questions</h1>
-  <p>Questions are the site's public backlog. When one is taken up, its investigation appears here and in the <a href="/feed.xml">feed</a>.</p>
-  <table>
-    <thead><tr><th scope="col">Question</th><th scope="col">Record</th><th scope="col">Status</th></tr></thead>
-    <tbody>{qs.map((q) => <tr><td>{q.data.text}{q.data.note ? <span class="small muted"> {q.data.note}</span> : null}</td><td><a href={recordPath(q.data.record.dimension, q.data.record.place)}>{dimName(q.data.record.dimension)}, {placeName(q.data.record.place)}</a></td><td>{STATUS_LABEL[q.data.status]}{q.data.investigation ? <>: <a href={`/investigations/${q.data.investigation}/`}>{q.data.investigation}</a></> : null}</td></tr>)}</tbody>
-  </table>
+  <p class="lead">The public backlog: what a Record could not yet answer. When a question is taken up, its investigation appears here and in the <a href="/feed.xml">feed</a>.</p>
+  <ul class="qlist">{qs.map((q) => (
+    <li>
+      <p class="q">{q.data.text}</p>
+      <span class="status"><span class="chip">{STATUS_LABEL[q.data.status]}</span></span>
+      <span class="status"><a href={recordPath(q.data.record.dimension, q.data.record.place)}>{dimName(q.data.record.dimension)}, {placeName(q.data.record.place)}</a>{q.data.investigation ? <>; <a href={`/investigations/${q.data.investigation}/`}>investigation {q.data.investigation}</a></> : null}</span>
+      {q.data.note ? <span class="status">{q.data.note}</span> : null}
+    </li>
+  ))}</ul>
 </Base>

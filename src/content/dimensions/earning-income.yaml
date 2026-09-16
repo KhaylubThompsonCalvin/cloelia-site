@@ -1,0 +1,9 @@
+name: Earning income
+definition: The practical ability to earn and keep income from work.
+not_covered:
+  - wealth
+  - benefits
+candidate_measures:
+  - name: Median earnings by decade
+    source: Census, BLS historical series
+lens: [economic]

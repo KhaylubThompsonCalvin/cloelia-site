@@ -1,0 +1,8 @@
+name: Participating civically
+definition: The practical ability to vote, hold office, assemble, and petition.
+not_covered:
+  - party outcomes (never scored)
+candidate_measures:
+  - name: Registration and turnout by decade
+    source: Census Current Population Survey voting supplements; state records
+lens: [social]

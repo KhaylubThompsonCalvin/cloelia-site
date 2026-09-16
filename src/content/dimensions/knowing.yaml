@@ -1,0 +1,8 @@
+name: Access to information
+definition: The practical ability to reach information and communication, from libraries and the press to the telephone, broadcast, and the internet.
+not_covered:
+  - media content
+candidate_measures:
+  - name: Household telephone, radio, television, and internet adoption
+    source: Census, FCC, NTIA historical tables
+lens: [education, technological]

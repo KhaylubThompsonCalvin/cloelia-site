@@ -1,0 +1,8 @@
+name: Starting a business
+definition: The practical ability to found and run an enterprise.
+not_covered:
+  - firm profitability
+candidate_measures:
+  - name: Business formation and self-employment
+    source: Census Business Formation Statistics; historical County Business Patterns
+lens: [economic]

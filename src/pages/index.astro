@@ -1,56 +1,78 @@
 ---
+// Home: let the visitor do something. One label, one sentence, three actions; the featured Record;
+// the freedoms as cards; the five grades in one strip. Explanation lives under About.
 import Base from '../layouts/Base.astro';
-import GradeChip from '../components/GradeChip.astro';
-import { loadAll, nameMap, findingByRef, recordPath, STATUS_LABEL } from '../lib/content';
+import EvidenceBadge from '../components/EvidenceBadge.astro';
+import { loadAll, nameMap, findingByRef, recordPath, freedomCards, GRADES_IN_ORDER } from '../lib/content';
 const all = await loadAll();
 const placeNames = nameMap(all.places);
 const featured = all.records.find((r) => r.data.status !== 'draft');
 const featuredDim = featured ? all.dimensions.find((d) => d.id === featured.data.dimension) : undefined;
 const headline = featured ? findingByRef(all.findings, featured.data.headline_finding) : undefined;
-const recordCount = (dim: string) => all.records.filter((r) => r.data.dimension === dim && r.data.status !== 'draft').length;
-const openQuestions = all.questions.filter((q) => q.data.status !== 'answered').slice(0, 5);
-const latest = [
-  ...all.investigations.map((i) => ({ date: i.data.dates.verified, text: `Investigation ${i.data.id} verified`, href: `/investigations/${i.data.id}/` })),
-  ...all.corrections.map((c) => ({ date: c.data.date, text: c.data.what, href: c.data.target })),
-].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 6);
+const cards = freedomCards(all);
+const openCount = all.questions.filter((q) => q.data.status !== 'answered').length;
 ---
 <Base title="Freedom, measured" description="CLOELIA.AI measures how people's practical freedoms changed: for one freedom and one place at a time, what happened, what followed, for whom, what can be measured, how strong the evidence is, and what remains unknown.">
-  <h1 class="lede">CLOELIA measures how people's practical freedoms changed.</h1>
-  <p>Pick a freedom and a place. You get what happened, what the numbers show, who it applied to, and how sure the evidence is. With sources.</p>
+  <section class="hero" aria-labelledby="h-hero">
+    <p class="label">Freedom Analytics</p>
+    <h1 id="h-hero">How people's practical freedoms changed, measured.</h1>
+    <p>Pick a freedom and a place. See what happened, what the numbers show, who it covered, and how strong the evidence is.</p>
+    <p class="actions">
+      <a class="btn primary" href="/freedoms/">Explore freedoms</a>
+      <a class="btn" href="/places/">Explore places</a>
+      <a class="btn" href="/questions/">Browse questions{openCount ? ` (${openCount})` : ''}</a>
+    </p>
+  </section>
 
   {featured && featuredDim && (
-    <section class="card" aria-labelledby="featured">
-      <p class="small muted">Featured Record</p>
-      <h2 id="featured"><a href={recordPath(featured.data.dimension, featured.data.place)}>{featuredDim.data.name}, {placeNames.get(featured.data.place)}, {featured.data.period.from} to {featured.data.period.to}</a></h2>
-      {headline?.item && <p><GradeChip grade={headline.item.grade} /> {headline.item.text}</p>}
-      <p class="small muted">Covers {featured.data.covers}. {featured.data.status === 'staging' ? 'Fixture content for the site skeleton; not a real Record.' : ''}</p>
+    <section class="section" aria-labelledby="h-featured">
+      <p class="label" id="h-featured">Featured Record</p>
+      <div class="card featured">
+        <div>
+          <p class="label">{featuredDim.data.name}</p>
+          <h2><a href={recordPath(featured.data.dimension, featured.data.place)}>{placeNames.get(featured.data.place)}</a></h2>
+          <dl class="facts">
+            <dt>Period</dt><dd>{featured.data.period.from} to {featured.data.period.to}</dd>
+            <dt>Covers</dt><dd>{featured.data.covers}</dd>
+          </dl>
+        </div>
+        <div>
+          {headline?.item && (
+            <>
+              <EvidenceBadge grade={headline.item.grade} />
+              <p class="take">{headline.item.text}</p>
+            </>
+          )}
+          <p class="actions"><a class="btn primary" href={recordPath(featured.data.dimension, featured.data.place)}>Explore Record</a></p>
+          {featured.data.status === 'staging' && <p class="later">Fixture content for the site skeleton; not a real Record.</p>}
+        </div>
+      </div>
     </section>
   )}
 
-  <div class="grid2 section">
-    <section aria-labelledby="h-freedoms">
-      <h2 id="h-freedoms">Freedoms</h2>
-      <table>
-        <thead><tr><th scope="col">Freedom</th><th scope="col">Records</th></tr></thead>
-        <tbody>{all.dimensions.map((d) => <tr><td><a href={`/freedoms/${d.id}/`}>{d.data.name}</a></td><td>{recordCount(d.id) || 'planned'}</td></tr>)}</tbody>
-      </table>
-    </section>
-    <section aria-labelledby="h-latest">
-      <h2 id="h-latest">Latest</h2>
-      {latest.length ? <ul class="plain">{latest.map((l) => <li><span class="small muted">{l.date}</span> <a href={l.href}>{l.text}</a></li>)}</ul> : <p class="muted">Nothing published yet.</p>}
-      <h3>Open questions</h3>
-      <ul class="plain">{openQuestions.map((q) => <li>{q.data.text} <span class="status">{STATUS_LABEL[q.data.status]}</span></li>)}</ul>
-      <p class="small"><a href="/questions/">All open questions</a></p>
-    </section>
-  </div>
+  <section class="section" aria-labelledby="h-freedoms">
+    <h2 id="h-freedoms">Freedoms</h2>
+    <p class="lead">Each freedom has its own definition and its own measures. There is no combined score.</p>
+    <ul class="cards">
+      {cards.map((c) => (
+        <li class:list={['card', 'tile', { planned: c.records === 0 }]}>
+          <h3>{c.name}</h3>
+          <p>{c.definition}</p>
+          <div class="foot">
+            <span class="chip">{c.records ? `${c.records} Record${c.records === 1 ? '' : 's'}` : 'Planned'}</span>
+            <a class="go" href={`/freedoms/${c.id}/`}>{c.records ? 'Open' : 'See definition'}</a>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </section>
 
-  <section class="section legend" aria-labelledby="h-read">
-    <h2 id="h-read">How to read a Record</h2>
-    <p><GradeChip grade="measured" /> a number from a documented dataset, produced by a verified investigation.</p>
-    <p><GradeChip grade="documented" /> an event or rule attested by sources.</p>
-    <p><GradeChip grade="inferred" /> an interpretation, labeled as one.</p>
-    <p><GradeChip grade="contested" /> credible sources disagree; both are shown.</p>
-    <p><GradeChip grade="insufficient" /> the record does not answer the question. A result, not a failure.</p>
-    <p class="small muted">About the name: a Roman legend, told with variants. <a href="/about/">Why it fits.</a></p>
+  <section class="section" aria-labelledby="h-read">
+    <h2 id="h-read">How to read the evidence</h2>
+    <p class="lead">Every finding carries one of five grades before its text.</p>
+    <ul class="grades">
+      {GRADES_IN_ORDER.map((g) => <li><EvidenceBadge grade={g} meaning /></li>)}
+    </ul>
+    <p class="actions"><a class="btn" href="/about/">How CLOELIA works</a></p>
   </section>
 </Base>

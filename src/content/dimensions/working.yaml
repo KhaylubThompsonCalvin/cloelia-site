@@ -1,0 +1,10 @@
+name: Working for whom you choose
+definition: The practical ability to choose one's employer, occupation, or self-employment, and to leave.
+not_covered:
+  - wage levels on their own
+candidate_measures:
+  - name: Occupational distribution by decade
+    source: Census, IPUMS
+  - name: Self-employment share
+    source: Census, BLS
+lens: [economic, technological]

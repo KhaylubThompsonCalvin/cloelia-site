@@ -42,6 +42,7 @@
   --size-4: 1.75rem;     /* 28 record title on phones */
   --size-5: 2.375rem;    /* 38 record title */
   --size-6: 3.25rem;     /* 52 the one headline number, when there is one */
+  --size-7: 4.25rem;     /* 68 the Record identity line on wide screens */
   --leading-read: 1.6;
   --leading-ui: 1.4;
   --measure: 66ch;       /* reading width */
@@ -49,6 +50,8 @@
   --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px;
   --radius: 2px;         /* quiet; chips and figures only */
   --target: 24px;        /* minimum hit size */
+  --tap: 44px;           /* comfortable tap height for buttons and the rail */
+  --radius-2: 6px;       /* buttons, cards */
 }
 
 @media (prefers-color-scheme: dark) {

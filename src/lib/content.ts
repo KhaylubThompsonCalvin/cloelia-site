@@ -30,3 +30,20 @@ export const STATUS_LABEL: Record<string, string> = {
 export const GRADE_LABEL: Record<string, string> = {
   measured: 'Measured', documented: 'Documented', inferred: 'Inferred', contested: 'Contested', insufficient: 'Insufficient evidence',
 };
+
+export const GRADE_MEANING: Record<string, string> = {
+  measured: 'a number from a documented dataset', documented: 'an event or rule attested by sources', inferred: 'an interpretation, labeled as one',
+  contested: 'credible sources disagree; both shown', insufficient: 'the record does not answer it',
+};
+
+/** Public labels for the eleven freedoms and their Record counts, for cards. */
+export const FREEDOM_ORDER = ['owning-a-home', 'moving', 'working', 'earning-income', 'owning-property', 'borrowing', 'starting-a-business', 'learning', 'knowing', 'participating', 'choosing'];
+export function freedomCards(all: All) {
+  const rank = (id: string) => { const i = FREEDOM_ORDER.indexOf(id); return i < 0 ? FREEDOM_ORDER.length : i; };
+  return all.dimensions.map((d) => {
+    const records = all.records.filter((r) => r.data.dimension === d.id && r.data.status !== 'draft');
+    return { id: d.id, name: d.data.name, definition: d.data.definition, records: records.length };
+  }).sort((a, b) => (b.records > 0 ? 1 : 0) - (a.records > 0 ? 1 : 0) || rank(a.id) - rank(b.id));
+}
+
+export const GRADES_IN_ORDER = ['measured', 'documented', 'inferred', 'contested', 'insufficient'] as const;

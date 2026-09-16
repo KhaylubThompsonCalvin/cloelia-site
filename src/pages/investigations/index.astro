@@ -4,9 +4,10 @@ import { loadAll } from '../../lib/content';
 const all = await loadAll();
 const invs = [...all.investigations].sort((a, b) => a.data.number - b.data.number);
 ---
-<Base title="Investigations" description="The lab: every measure on CLOELIA.AI comes from one of these investigations, with its question, method, cleaning decisions, verification, findings, limitations, and notebook." current="investigations">
+<Base title="Behind the numbers" description="The lab: every measure on CLOELIA.AI comes from one of these investigations, with its question, method, cleaning decisions, verification, findings, limitations, and notebook." current="investigations">
+  <p class="label">Behind the numbers</p>
   <h1>Investigations</h1>
-  <p>Every measure on this site comes from one of these. Each shows its question, its hypothesis as written before the data, its method, its cleaning decisions, its verification, its findings, its limitations, and its notebook.</p>
+  <p class="lead">Every number on this site comes from one of these. Each shows its question, its method, its cleaning decisions, its verification, its findings, its limitations, and its notebook.</p>
   <table>
     <thead><tr><th scope="col">Number</th><th scope="col">Question</th><th scope="col">Level</th><th scope="col">Status</th></tr></thead>
     <tbody>{invs.map((i) => <tr><td>{String(i.data.number).padStart(3, '0')}</td><td><a href={`/investigations/${i.data.id}/`}>{i.data.question}</a></td><td>{i.data.level}</td><td>{i.data.status}</td></tr>)}</tbody>

@@ -1,0 +1,7 @@
+---
+// The evidence grade as a badge: text first, a colored rule second. Used in the scan block and on cards.
+import { GRADE_LABEL, GRADE_MEANING } from '../lib/content';
+export interface Props { grade: string; meaning?: boolean }
+const { grade, meaning = false } = Astro.props;
+---
+<span class="badge grade" data-grade={grade}>{GRADE_LABEL[grade] ?? grade}{meaning && <small>{GRADE_MEANING[grade]}</small>}</span>

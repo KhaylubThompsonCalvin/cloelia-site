@@ -1,0 +1,8 @@
+name: Borrowing
+definition: The practical ability to access credit and capital.
+not_covered:
+  - investment returns
+candidate_measures:
+  - name: Mortgage and consumer-credit availability
+    source: Federal Reserve historical statistics; HMDA where applicable
+lens: [economic]

@@ -1,4 +1,5 @@
 ---
+// One finding: the grade first, the text, then its basis and limitations behind a native disclosure.
 import GradeChip from './GradeChip.astro';
 export interface Props {
   finding: { id: string; grade: string; text: string; support: Record<string, any>; limitations: string };
@@ -9,13 +10,19 @@ const { finding: f, investigation, measureNames = {} } = Astro.props;
 const s = f.support || {};
 ---
 <li class="finding" data-grade={f.grade} id={`finding-${f.id}`}>
-  <GradeChip grade={f.grade} /> {f.text}
-  <p class="support">
-    {f.grade === 'measured' && <>Measure: {measureNames[s.measure] ?? s.measure}; notebook cell {s.cell}; <a href={`/investigations/${investigation}/`}>investigation {investigation}</a></>}
-    {f.grade === 'documented' && <>Sources: {(s.sources || []).join(', ')}</>}
-    {f.grade === 'inferred' && <>Rests on: {(s.rests_on || []).join(', ')}. Reasoning: {s.reasoning}</>}
-    {f.grade === 'contested' && <>Positions: {(s.positions || []).map((p: any) => `${p.text} (${(p.sources || []).join(', ')})`).join(' | ')}</>}
-    {f.grade === 'insufficient' && <>Looked for: {s.looked_for}; where: {s.where}; would answer it: {s.would_answer}</>}
-  </p>
-  <p class="support">Limitations: {f.limitations}</p>
+  <GradeChip grade={f.grade} />
+  <p class="text">{f.text}</p>
+  <details class="more">
+    <summary>Basis and limitations</summary>
+    <div class="body">
+      <p class="support">
+        {f.grade === 'measured' && <>Measure: {measureNames[s.measure] ?? s.measure}; notebook cell {s.cell}; <a href={`/investigations/${investigation}/`}>investigation {investigation}</a></>}
+        {f.grade === 'documented' && <>Sources: {(s.sources || []).join(', ')}</>}
+        {f.grade === 'inferred' && <>Rests on: {(s.rests_on || []).join(', ')}. Reasoning: {s.reasoning}</>}
+        {f.grade === 'contested' && <>Positions: {(s.positions || []).map((p: any) => `${p.text} (${(p.sources || []).join(', ')})`).join(' | ')}</>}
+        {f.grade === 'insufficient' && <>Looked for: {s.looked_for}; where: {s.where}; would answer it: {s.would_answer}</>}
+      </p>
+      <p class="support">Limitations: {f.limitations}</p>
+    </div>
+  </details>
 </li>

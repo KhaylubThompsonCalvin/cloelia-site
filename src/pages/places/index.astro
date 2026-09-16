@@ -3,14 +3,25 @@ import Base from '../../layouts/Base.astro';
 import { loadAll, recordPath } from '../../lib/content';
 const all = await loadAll();
 const dimName = (id: string) => all.dimensions.find((d) => d.id === id)?.data.name ?? id;
+const LEVEL: Record<string, string> = { country: 'Country', state: 'State', county: 'County', city: 'City' };
+const places = all.places.map((p) => ({ p, recs: all.records.filter((r) => r.data.place === p.id && r.data.status !== 'draft') }));
+const withRecords = places.filter((x) => x.recs.length);
+const without = places.filter((x) => !x.recs.length);
 ---
 <Base title="Places" description="Places with Records on CLOELIA.AI." current="places">
   <h1>Places</h1>
-  <table>
-    <thead><tr><th scope="col">Place</th><th scope="col">Level</th><th scope="col">Records</th></tr></thead>
-    <tbody>{all.places.map((p) => {
-      const recs = all.records.filter((r) => r.data.place === p.id && r.data.status !== 'draft');
-      return <tr><td><a href={`/places/${p.id}/`}>{p.data.name}</a></td><td>{p.data.level}</td><td>{recs.length ? recs.map((r) => <a href={recordPath(r.data.dimension, r.data.place)}>{dimName(r.data.dimension)}</a>) : <span class="muted">none yet</span>}</td></tr>;
-    })}</tbody>
-  </table>
+  <p class="lead">One place at a time. A place page lists its Records and the boundary changes that matter to its measures.</p>
+  <section class="section" aria-labelledby="h-with">
+    <h2 id="h-with">With Records</h2>
+    {withRecords.length ? (
+      <ul class="cards">{withRecords.map(({ p, recs }) => <li class="card tile"><h3><a href={`/places/${p.id}/`}>{p.data.name}</a></h3><p>{LEVEL[p.data.level]}. {recs.map((r) => dimName(r.data.dimension)).join('; ')}.</p><div class="foot"><span class="chip">{recs.length} Record{recs.length === 1 ? '' : 's'}</span><a class="go" href={recs.length === 1 ? recordPath(recs[0].data.dimension, recs[0].data.place) : `/places/${p.id}/`}>{recs.length === 1 ? 'Explore Record' : 'Open'}</a></div></li>)}</ul>
+    ) : <p class="muted">No Records published yet.</p>}
+  </section>
+  {without.length > 0 && (
+    <section class="section" aria-labelledby="h-without">
+      <h2 id="h-without">Referenced, no Record yet</h2>
+      <p class="lead">Places that appear as comparisons or parents in published measures.</p>
+      <ul class="cards">{without.map(({ p }) => <li class="card tile planned"><h3><a href={`/places/${p.id}/`}>{p.data.name}</a></h3><p>{LEVEL[p.data.level]}</p></li>)}</ul>
+    </section>
+  )}
 </Base>

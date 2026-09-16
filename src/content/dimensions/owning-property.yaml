@@ -1,0 +1,8 @@
+name: Owning and transferring property
+definition: The practical ability to acquire, keep, and transfer property other than a home, and to enter contracts.
+not_covered:
+  - corporate law
+candidate_measures:
+  - name: Property-law developments by population
+    source: statutes, in the source's terms
+lens: [economic]

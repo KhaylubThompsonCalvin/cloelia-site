@@ -1,0 +1,9 @@
+name: Moving
+definition: The practical ability to change where one lives or to travel between places.
+not_covered:
+  - tourism
+  - commuting time on its own
+candidate_measures:
+  - name: State-to-state migration
+    source: Census Bureau, decennial and ACS migration tables
+lens: [housing, social]

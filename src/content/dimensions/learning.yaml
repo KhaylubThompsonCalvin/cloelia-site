@@ -1,0 +1,8 @@
+name: Learning
+definition: The practical ability to receive schooling and reach an attainment level.
+not_covered:
+  - quality of instruction
+candidate_measures:
+  - name: School attendance and attainment by decade
+    source: Census; NCES Digest of Education Statistics historical tables
+lens: [education]

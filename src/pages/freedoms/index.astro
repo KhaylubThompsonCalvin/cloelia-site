@@ -1,14 +1,23 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { loadAll } from '../../lib/content';
+import { loadAll, freedomCards } from '../../lib/content';
 const all = await loadAll();
-const count = (dim: string) => all.records.filter((r) => r.data.dimension === dim && r.data.status !== 'draft').length;
+const cards = freedomCards(all);
+const withRecords = cards.filter((c) => c.records > 0);
+const planned = cards.filter((c) => c.records === 0);
 ---
 <Base title="Freedoms" description="The practical freedoms CLOELIA.AI measures, each with its own definition and its own measures. There is no combined score." current="freedoms">
   <h1>Freedoms</h1>
-  <p>A freedom here is a practical ability to act: to own, move, work, learn, borrow, participate. Each has its own definition and its own measures. There is no combined score. <a href="/about/">What counts and what does not.</a></p>
-  <table>
-    <thead><tr><th scope="col">Freedom</th><th scope="col">Definition</th><th scope="col">Records</th></tr></thead>
-    <tbody>{all.dimensions.map((d) => <tr><td><a href={`/freedoms/${d.id}/`}>{d.data.name}</a></td><td>{d.data.definition}</td><td>{count(d.id) || 'planned'}</td></tr>)}</tbody>
-  </table>
+  <p class="lead">A freedom here is a practical ability to act. Each has its own definition and its own measures; there is no combined score.</p>
+  <section class="section" aria-labelledby="h-open">
+    <h2 id="h-open">With Records</h2>
+    {withRecords.length ? (
+      <ul class="cards">{withRecords.map((c) => <li class="card tile"><h3>{c.name}</h3><p>{c.definition}</p><div class="foot"><span class="chip">{c.records} Record{c.records === 1 ? '' : 's'}</span><a class="go" href={`/freedoms/${c.id}/`}>Open</a></div></li>)}</ul>
+    ) : <p class="muted">No Records published yet.</p>}
+  </section>
+  <section class="section" aria-labelledby="h-planned">
+    <h2 id="h-planned">Planned</h2>
+    <p class="lead">Defined and waiting for a first investigation. Each page states what will count and which public measures could stand for it.</p>
+    <ul class="cards">{planned.map((c) => <li class="card tile planned"><h3>{c.name}</h3><p>{c.definition}</p><div class="foot"><span class="chip">Planned</span><a class="go" href={`/freedoms/${c.id}/`}>See definition</a></div></li>)}</ul>
+  </section>
 </Base>
