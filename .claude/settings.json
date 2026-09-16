@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run check)", "Bash(npm run validate)", "Bash(npm run build)", "Bash(npm run build:preview)",
+      "Bash(npm test)", "Bash(npm run test:unit)", "Bash(npm run bridge)", "Bash(npm run lhci)",
+      "Bash(npm audit --audit-level=high)", "Bash(npx html-validate*)", "Bash(git status*)", "Bash(git diff*)", "Bash(git log*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [{ "type": "command", "command": "node .claude/hooks/verify-guard.mjs hook" }]
+      }
+    ]
+  }
+}

@@ -1,0 +1,49 @@
+# Render Blueprint for CLOELIA.AI. Phase 4 declares the staging service only; the production service
+# (cloelia-site) is added at Phase 6 with the domain cutover, following the Khaylub.com V2 lesson that a
+# service which once served preview builds is never promoted to production.
+#
+#   cloelia-site-staging   the preview build (PUBLIC_SITE_ENV=preview: noindex, the banner), pull-request
+#                          previews on, robots disallow. Never becomes production.
+#
+# Headers: security headers on every response; CSP in Report-Only mode until the host's path-rule delivery
+# is verified (the Phase 19 lesson). scripts/serve-with-headers.mjs applies these locally for the tests.
+services:
+  - type: web
+    name: cloelia-site-staging
+    runtime: static
+    buildCommand: npm ci && npm run build:preview
+    staticPublishPath: dist
+    pullRequestPreviewsEnabled: true
+    envVars:
+      - key: NODE_VERSION
+        value: 22.14.0
+      - key: PUBLIC_SITE_ENV
+        value: preview
+    headers:
+      - path: /*
+        name: Strict-Transport-Security
+        value: max-age=31536000; includeSubDomains
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - path: /*
+        name: Permissions-Policy
+        value: camera=(), microphone=(), geolocation=(), payment=()
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Robots-Tag
+        value: noindex, nofollow
+      - path: /*
+        name: Content-Security-Policy-Report-Only
+        value: default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'
+      - path: /_astro/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      - path: /*.html
+        name: Cache-Control
+        value: no-cache

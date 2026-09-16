@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, 'feat/**', 'fix/**', 'chore/**']
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Types and content schemas
+        run: npm run check
+      - name: Validation (relationships, the standard's fields, banned characters, machine paths)
+        run: npm run validate
+      - name: Bridge unit tests (the lab fixtures are vendored under tests/fixtures/lab)
+        run: npm run test:unit
+        env:
+          LAB_DIR: ${{ github.workspace }}/tests/fixtures/lab
+      - name: Build (preview: noindex, banner)
+        run: npm run build:preview
+      - name: Validation against the built output
+        run: npm run validate
+      - name: HTML validity
+        run: npx html-validate "dist/**/*.html"
+      - name: Playwright browsers
+        run: npx playwright install --with-deps chromium
+      - name: Playwright (structure, Record order, grades, verify layer, JS off, axe both palettes, keyboard, targets, headers, feeds)
+        run: npx playwright test
+        env:
+          CI: 'true'
+      - name: Dependency audit
+        run: npm audit --audit-level=high
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reports
+          path: playwright-report
+          if-no-files-found: ignore
+
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build:preview
+      - name: Lighthouse budgets on every template (mobile profile)
+        run: npm run lhci
