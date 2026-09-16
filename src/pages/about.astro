@@ -1,0 +1,44 @@
+---
+import Base from '../layouts/Base.astro';
+import GradeChip from '../components/GradeChip.astro';
+---
+<Base title="About" description="What CLOELIA.AI is, how to read a Record, the standard, the name, the method, and what the site does not do." current="about">
+  <h1>About CLOELIA.AI</h1>
+  <p class="lede">CLOELIA.AI measures how people's practical freedoms changed.</p>
+  <p>For one freedom at a time, in one place at a time, a Record shows what happened, what followed, for whom, what can be measured, how strong the evidence is, and what remains unknown. Every number comes from a documented dataset and a published investigation; every development comes from a source you can open.</p>
+
+  <section class="section legend" aria-labelledby="h-read">
+    <h2 id="h-read">How to read a Record</h2>
+    <p>Each finding carries a grade before its text.</p>
+    <p><GradeChip grade="measured" /> a number from a dataset, produced by a verified investigation.</p>
+    <p><GradeChip grade="documented" /> an event or rule attested by sources.</p>
+    <p><GradeChip grade="inferred" /> an interpretation, labeled as one.</p>
+    <p><GradeChip grade="contested" /> credible sources disagree, and both are shown.</p>
+    <p><GradeChip grade="insufficient" /> the record does not answer the question. A result, not a failure.</p>
+  </section>
+
+  <section class="section" aria-labelledby="h-standard">
+    <h2 id="h-standard">The standard</h2>
+    <p>Questions before answers. Provenance for every number and event. Primary sources before secondary. Fact, measurement, and interpretation kept apart. For whom, always. No scores for parties or people. No combined freedom index. No prescriptions. Disagreement shown, not resolved. Corrections public.</p>
+  </section>
+
+  <section class="section" aria-labelledby="h-name">
+    <h2 id="h-name">The name</h2>
+    <p>Cloelia is a figure of Roman legend. In the ancient accounts a young hostage escaped the camp of Lars Porsena and crossed the Tiber; sent back under the treaty, she was freed by the king's judgment and chose the youngest hostages to free with her. The sources disagree about nearly every detail, and the statue that honored her was lost and rebuilt. We use the crossing as a motif and the disagreement as a reminder. It is a legend, and we say so.</p>
+  </section>
+
+  <section class="section" aria-labelledby="h-method">
+    <h2 id="h-method">The method and the lab</h2>
+    <p>Every measure comes from an <a href="/investigations/">investigation</a> with its question, its data, its cleaning decisions, its verification, and its notebook published. Investigations are produced in a separate laboratory repository under an artifact contract; this site publishes only what passes the contract's validator, and records the laboratory commit each number came from.</p>
+  </section>
+
+  <section class="section" aria-labelledby="h-not">
+    <h2 id="h-not">What CLOELIA does not do</h2>
+    <p>Advocate. Score actors. Combine freedoms into one number. Generate answers when you load a page. Host discussion. Collect accounts.</p>
+  </section>
+
+  <section class="section" aria-labelledby="h-corrections">
+    <h2 id="h-corrections">Corrections and contact</h2>
+    <p>If something here is wrong, the correction goes into the Record's changelog and the <a href="/changelog/">site changelog</a>, with the reason. A contact address is published at launch.</p>
+  </section>
+</Base>

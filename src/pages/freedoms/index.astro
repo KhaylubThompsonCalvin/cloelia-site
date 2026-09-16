@@ -1,0 +1,14 @@
+---
+import Base from '../../layouts/Base.astro';
+import { loadAll } from '../../lib/content';
+const all = await loadAll();
+const count = (dim: string) => all.records.filter((r) => r.data.dimension === dim && r.data.status !== 'draft').length;
+---
+<Base title="Freedoms" description="The practical freedoms CLOELIA.AI measures, each with its own definition and its own measures. There is no combined score." current="freedoms">
+  <h1>Freedoms</h1>
+  <p>A freedom here is a practical ability to act: to own, move, work, learn, borrow, participate. Each has its own definition and its own measures. There is no combined score. <a href="/about/">What counts and what does not.</a></p>
+  <table>
+    <thead><tr><th scope="col">Freedom</th><th scope="col">Definition</th><th scope="col">Records</th></tr></thead>
+    <tbody>{all.dimensions.map((d) => <tr><td><a href={`/freedoms/${d.id}/`}>{d.data.name}</a></td><td>{d.data.definition}</td><td>{count(d.id) || 'planned'}</td></tr>)}</tbody>
+  </table>
+</Base>

@@ -1,0 +1,25 @@
+---
+import Base from '../../layouts/Base.astro';
+import { loadAll, recordPath } from '../../lib/content';
+export async function getStaticPaths() {
+  const { places } = await loadAll();
+  return places.map((p) => ({ params: { place: p.id }, props: { place: p } }));
+}
+const { place } = Astro.props;
+const all = await loadAll();
+const records = all.records.filter((r) => r.data.place === place.id && r.data.status !== 'draft');
+const dimName = (id: string) => all.dimensions.find((d) => d.id === id)?.data.name ?? id;
+---
+<Base title={place.data.name} description={`Records for ${place.data.name} on CLOELIA.AI.`} current="places">
+  <p class="crumbs"><a href="/places/">Places</a> / {place.data.name}</p>
+  <h1>{place.data.name}</h1>
+  <p class="small muted">Level: {place.data.level}.</p>
+  <section class="section" aria-labelledby="h-records">
+    <h2 id="h-records">Records</h2>
+    {records.length ? <ul class="plain">{records.map((r) => <li><a href={recordPath(r.data.dimension, r.data.place)}>{dimName(r.data.dimension)}, {r.data.period.from} to {r.data.period.to}</a></li>)}</ul> : <p class="muted">No Records yet for this place.</p>}
+  </section>
+  <section class="section" aria-labelledby="h-bounds">
+    <h2 id="h-bounds">Boundary notes</h2>
+    {place.data.boundary_notes.length ? <ul class="plain">{place.data.boundary_notes.map((b) => <li><strong>{b.year}</strong> {b.note}</li>)}</ul> : <p class="muted">No boundary changes recorded for the measures published here.</p>}
+  </section>
+</Base>

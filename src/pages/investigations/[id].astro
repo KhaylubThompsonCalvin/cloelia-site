@@ -1,0 +1,48 @@
+---
+import Base from '../../layouts/Base.astro';
+import Finding from '../../components/Finding.astro';
+import { loadAll, recordPath } from '../../lib/content';
+export async function getStaticPaths() {
+  const { investigations } = await loadAll();
+  return investigations.map((i) => ({ params: { id: i.data.id }, props: { inv: i } }));
+}
+const { inv } = Astro.props;
+const all = await loadAll();
+const measures = all.measures.filter((m) => m.data.investigation === inv.data.id);
+const measureNames = Object.fromEntries(measures.map((m) => [m.data.slug, m.data.name]));
+const findings = all.findings.find((f) => f.data.investigation === inv.data.id);
+const charts = all.charts.filter((c) => c.data.investigation === inv.data.id);
+const datasets = all.datasets.filter((d) => d.data.investigation === inv.data.id);
+const dim = all.dimensions.find((d) => d.id === inv.data.record.dimension);
+const place = all.places.find((p) => p.id === inv.data.record.place);
+const record = all.records.find((r) => r.data.dimension === inv.data.record.dimension && r.data.place === inv.data.record.place);
+---
+<Base title={`Investigation ${inv.data.id}`} description={inv.data.question} current="investigations">
+  <p class="crumbs"><a href="/investigations/">Investigations</a> / {inv.data.id}</p>
+  <h1>Investigation {String(inv.data.number).padStart(3, '0')} <span class="chip">Level {inv.data.level}</span> <span class="chip">{inv.data.status} {inv.data.dates.verified}</span></h1>
+  <p class="lede">{inv.data.question}</p>
+  <dl class="facts">
+    <dt>Hypothesis, as written before the data</dt><dd>{inv.data.hypothesis}</dd>
+    <dt>New skill{inv.data.new_skills.length > 1 ? 's' : ''}</dt><dd>{inv.data.new_skills.join('; ')}</dd>
+    <dt>Verification</dt><dd>Restart and Run All sequential: yes. Zero errors: yes. Raw hashes match: yes. Checked {inv.data.verification.checked_on}.</dd>
+    <dt>Notebook</dt><dd><code>{inv.data.notebook}</code> in the lab repository at commit <code>{inv.data.lab_commit.slice(0, 7)}</code></dd>
+    <dt>Raw files</dt><dd>{inv.data.raw_files.map((r) => <div><code>{r.path}</code> <span class="caption">sha256 {r.sha256}</span></div>)}</dd>
+    <dt>Assistance</dt><dd>{inv.data.assistance}</dd>
+    <dt>Produced</dt><dd>{measures.map((m) => m.data.name).join('; ')}{record && dim && place ? <> on <a href={recordPath(record.data.dimension, record.data.place)}>{dim.data.name}, {place.data.name}</a></> : null}</dd>
+  </dl>
+
+  <section class="section" aria-labelledby="h-charts">
+    <h2 id="h-charts">Charts</h2>
+    {charts.length ? charts.map((c) => <figure class="figure"><img src={c.data.public_path} alt={c.data.description} width="740" height="240" /><figcaption class="caption">{c.data.title}. {c.data.caption}</figcaption></figure>) : <p class="muted">No chart published.</p>}
+  </section>
+
+  <section class="section" aria-labelledby="h-findings">
+    <h2 id="h-findings">Findings</h2>
+    {findings ? <ol class="findings">{findings.data.items.map((f) => <Finding finding={f} investigation={inv.data.id} measureNames={measureNames} />)}</ol> : <p class="muted">No findings published.</p>}
+  </section>
+
+  <section class="section" aria-labelledby="h-datasets">
+    <h2 id="h-datasets">Datasets</h2>
+    <ul class="plain">{datasets.map((d) => <li><a href={`/datasets/${d.id}/`}>{d.data.name}</a> <span class="small muted">({d.data.publisher}, retrieved {d.data.retrieved})</span></li>)}</ul>
+  </section>
+</Base>

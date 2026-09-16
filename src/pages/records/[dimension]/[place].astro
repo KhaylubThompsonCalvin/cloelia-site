@@ -1,0 +1,131 @@
+---
+// THE RECORD. Fixed order (Wireframes and Design Direction, section 0):
+//   scan block (freedom, place, period, population, the major measured change with its grade, the remaining question)
+//   1 What changed?  the headline finding and the primary chart
+//   2 What happened? the chronicle
+//   3 What followed? the measures in full
+//   4 What can be concluded? findings, grade first; limitations
+//   5 What is still unknown? open questions
+//   6 Verify: sources and datasets used, the investigations, the changelog
+//   7 Related Records
+import Base from '../../../layouts/Base.astro';
+import GradeChip from '../../../components/GradeChip.astro';
+import Finding from '../../../components/Finding.astro';
+import Chronicle from '../../../components/Chronicle.astro';
+import MeasureFigure from '../../../components/MeasureFigure.astro';
+import { loadAll, nameMap, citationMap, findingByRef, recordPath, STATUS_LABEL } from '../../../lib/content';
+
+export async function getStaticPaths() {
+  const { records } = await loadAll();
+  return records.map((r) => ({ params: { dimension: r.data.dimension, place: r.data.place }, props: { record: r } }));
+}
+const { record } = Astro.props;
+const all = await loadAll();
+const dim = all.dimensions.find((d) => d.id === record.data.dimension)!;
+const place = all.places.find((p) => p.id === record.data.place)!;
+const placeNames = nameMap(all.places);
+const populations = nameMap(all.populations);
+const sourceCitations = citationMap(all.sources);
+const developments = all.developments.filter((d) => d.data.record.dimension === dim.id && d.data.record.place === place.id);
+const questions = all.questions.filter((q) => q.data.record.dimension === dim.id && q.data.record.place === place.id);
+const measures = record.data.measures.map((slug) => all.measures.find((m) => m.id === slug)!).filter(Boolean);
+const measureNames = Object.fromEntries(measures.map((m) => [m.data.slug, m.data.name]));
+const investigationIds = [...new Set(measures.map((m) => m.data.investigation))];
+const findingSets = all.findings.filter((f) => investigationIds.includes(f.data.investigation));
+const chartFor = (slug: string) => all.charts.find((c) => c.data.measures.includes(slug))?.data;
+const datasetName = (id: string) => all.datasets.find((d) => d.id === id)?.data.name ?? id;
+const headline = findingByRef(all.findings, record.data.headline_finding);
+const primaryChart = chartFor(record.data.measures[0]);
+const openQuestions = questions.filter((q) => q.data.status !== 'answered');
+const usedSources = [...new Set(developments.flatMap((d) => d.data.sources))];
+const usedDatasets = [...new Set(measures.map((m) => m.data.dataset))];
+const corrections = all.corrections.filter((c) => c.data.target === recordPath(dim.id, place.id)).sort((a, b) => b.data.date.localeCompare(a.data.date));
+const related = all.records.filter((r) => r.id !== record.id && (r.data.dimension === dim.id || r.data.place === place.id));
+const title = `${dim.data.name}, ${place.data.name}, ${record.data.period.from} to ${record.data.period.to}`;
+const sections = [
+  ['changed', 'What changed'], ['happened', 'What happened'], ['followed', 'What followed'],
+  ['concluded', 'What can be concluded'], ['unknown', 'What is still unknown'], ['verify', 'Verify'],
+];
+---
+<Base title={title} description={`${dim.data.definition} Measured in ${place.data.name}, ${record.data.period.from} to ${record.data.period.to}, with sources.`} current="freedoms">
+  <p class="crumbs"><a href="/freedoms/">Freedoms</a> / <a href={`/freedoms/${dim.id}/`}>{dim.data.name}</a> / {place.data.name}</p>
+
+  <header class="scan" data-test="scan">
+    <p class="dimension" data-test="scan-dimension">{dim.data.name}</p>
+    <h1 data-test="scan-place-period">{place.data.name}, {record.data.period.from} to {record.data.period.to}</h1>
+    <p class="covers" data-test="scan-population">Covers {record.data.covers}.{record.data.not_covered.length ? ` Not covered: ${record.data.not_covered.join('; ')}.` : ''}</p>
+    {headline.item ? (
+      <p class="change" data-test="scan-change"><GradeChip grade={headline.item.grade} /> {headline.item.text}</p>
+    ) : (
+      <p class="change" data-test="scan-change"><GradeChip grade="insufficient" /> No headline finding is published for this Record yet.</p>
+    )}
+    <p class="unknown" data-test="scan-unknown">Still unknown: {openQuestions.length ? openQuestions.map((q) => q.data.text).join(' ') : 'no open questions recorded.'}</p>
+  </header>
+
+  <nav class="contents" aria-label="Contents">
+    <ol>{sections.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}</ol>
+  </nav>
+
+  <section class="section" id="changed" aria-labelledby="h-changed">
+    <h2 id="h-changed">1. What changed</h2>
+    {primaryChart ? (
+      <figure class="figure">
+        <img src={primaryChart.public_path} alt={primaryChart.description} width="740" height="240" />
+        <figcaption class="caption">{primaryChart.caption}</figcaption>
+      </figure>
+    ) : <p class="muted">No chart is published for the primary measure yet.</p>}
+    <p class="small muted">The measures in full, with definitions, populations, gaps, and data tables, are in section 3.</p>
+  </section>
+
+  <section class="section" id="happened" aria-labelledby="h-happened">
+    <h2 id="h-happened">2. What happened</h2>
+    {record.data.chronicle_note && <p class="small muted">{record.data.chronicle_note}</p>}
+    {developments.length ? <Chronicle items={developments} populations={populations} sources={sourceCitations} /> : <p class="muted">No developments are published yet.</p>}
+  </section>
+
+  <section class="section" id="followed" aria-labelledby="h-followed">
+    <h2 id="h-followed">3. What followed</h2>
+    {measures.map((m) => <MeasureFigure measure={m.data} chart={chartFor(m.data.slug)} placeNames={placeNames} datasetName={datasetName(m.data.dataset)} />)}
+  </section>
+
+  <section class="section" id="concluded" aria-labelledby="h-concluded">
+    <h2 id="h-concluded">4. What can be concluded</h2>
+    <p class="small muted">Each finding carries its grade first. Interpretation appears only inside a finding marked Inferred.</p>
+    {findingSets.map((set) => (
+      <ol class="findings">
+        {set.data.items.map((f) => <Finding finding={f} investigation={set.data.investigation} measureNames={measureNames} />)}
+      </ol>
+    ))}
+  </section>
+
+  <section class="section" id="unknown" aria-labelledby="h-unknown">
+    <h2 id="h-unknown">5. What is still unknown</h2>
+    {questions.length ? (
+      <ul class="qlist">
+        {questions.map((q) => (
+          <li>{q.data.text} <span class="status">{STATUS_LABEL[q.data.status]}{q.data.investigation ? <>: <a href={`/investigations/${q.data.investigation}/`}>investigation {q.data.investigation}</a></> : null}{q.data.note ? `. ${q.data.note}` : ''}</span></li>
+        ))}
+      </ul>
+    ) : <p class="muted">No open questions recorded.</p>}
+    <p class="small"><a href="/questions/">All open questions</a></p>
+  </section>
+
+  <section class="section" id="verify" aria-labelledby="h-verify">
+    <h2 id="h-verify">6. Verify</h2>
+    <h3>Sources used</h3>
+    <ul class="plain">{usedSources.map((s) => <li><a href={`/sources/${s}/`}>{sourceCitations.get(s) ?? s}</a></li>)}</ul>
+    <h3>Datasets used</h3>
+    <ul class="plain">{usedDatasets.map((d) => <li><a href={`/datasets/${d}/`}>{datasetName(d)}</a></li>)}</ul>
+    <h3>Investigations</h3>
+    <ul class="plain">{investigationIds.map((i) => <li><a href={`/investigations/${i}/`}>Investigation {i}</a></li>)}</ul>
+    <h3>Changelog</h3>
+    {corrections.length ? <ul class="plain">{corrections.map((c) => <li><span class="small muted">{c.data.date}</span> {c.data.what} <span class="small muted">({c.data.why})</span></li>)}</ul> : <p class="muted">No changes recorded.</p>}
+  </section>
+
+  <section class="section" id="related" aria-labelledby="h-related">
+    <h2 id="h-related">7. Related Records</h2>
+    {related.length ? (
+      <ul class="plain">{related.map((r) => <li><a href={recordPath(r.data.dimension, r.data.place)}>{all.dimensions.find((d) => d.id === r.data.dimension)?.data.name}, {placeNames.get(r.data.place)}</a></li>)}</ul>
+    ) : <p class="muted">No other Records yet. Records are listed here for navigation; no comparison is implied unless a measure is shared with an identical definition.</p>}
+  </section>
+</Base>

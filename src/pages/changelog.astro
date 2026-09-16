@@ -1,0 +1,11 @@
+---
+import Base from '../layouts/Base.astro';
+import { loadAll } from '../lib/content';
+const all = await loadAll();
+const items = [...all.corrections].sort((a, b) => b.data.date.localeCompare(a.data.date));
+---
+<Base title="Changelog" description="Corrections and additions across CLOELIA.AI, with reasons.">
+  <h1>Changelog</h1>
+  <p>Every correction names what changed, why, and when. Retractions stay visible.</p>
+  <ul class="plain">{items.map((c) => <li><span class="small muted">{c.data.date}</span> <a href={c.data.target}>{c.data.what}</a> <span class="small muted">({c.data.why})</span></li>)}</ul>
+</Base>

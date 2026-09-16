@@ -1,0 +1,97 @@
+/* CLOELIA.AI design tokens, Phase 1 (2026-09-16). Function first; the values are the system, not decoration.
+   Palette registers: deep water ink, cool paper, reflected-fire accent used once (links, the current point, focus).
+   Series colors validated with the dataviz palette validator (light on #eef0f2, dark on #101820): all checks pass. */
+
+:root {
+  color-scheme: light;
+  /* surfaces and ink */
+  --paper: #eef0f2;         /* page */
+  --surface: #f8f9fa;       /* figures, cards, tables */
+  --ink: #16202b;           /* primary text: deep water, not pure black */
+  --ink-2: #4f5b66;         /* secondary text */
+  --ink-3: #5a6672;         /* muted labels, captions: 5.1:1 on paper */
+  --line: #c9cfd5;          /* rules, borders */
+  --line-2: #dfe3e7;        /* table rows, grid */
+  --accent: #a2501b;        /* reflected fire: links, the current point, one emphasis per view */
+  --accent-ink: #7f3d12;    /* accent on paper at text sizes (contrast) */
+  --focus: #1e73c2;         /* focus ring */
+  /* evidence grades: a left rule plus the text label; never color alone */
+  --grade-measured: #2f7a4f;
+  --grade-documented: #1e73c2;
+  --grade-inferred: #9a6b00;
+  --grade-contested: #7a3fb8;
+  --grade-insufficient: #5a6672;
+  /* chart series, fixed order, never cycled: 1 the Record's own place, 2 the comparison, 3 and 4 further places */
+  --series-1: #1e73c2;
+  --series-2: #d0651a;
+  --series-3: #7a3fb8;
+  --series-4: #2f8f6a;
+  --sequential-hue: #1e73c2;   /* magnitude ramps: one hue, light to dark */
+  --diverging-cool: #1e73c2;   /* polarity: two hues plus a neutral midpoint */
+  --diverging-warm: #d0651a;
+  --diverging-mid: #b9c0c6;
+  --grid: #dfe3e7;
+  --axis: #74808b;
+  /* type */
+  --font-read: "Newsreader", Georgia, "Times New Roman", serif;   /* pairing A reading face */
+  --font-ui: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif; /* pairing A labels, data, chips */
+  --size-0: 0.8125rem;   /* 13 captions, chips */
+  --size-1: 0.9375rem;   /* 15 ui, tables */
+  --size-2: 1.125rem;    /* 18 body (serif needs a little more) */
+  --size-3: 1.375rem;    /* 22 section titles */
+  --size-4: 1.75rem;     /* 28 record title on phones */
+  --size-5: 2.375rem;    /* 38 record title */
+  --size-6: 3.25rem;     /* 52 the one headline number, when there is one */
+  --leading-read: 1.6;
+  --leading-ui: 1.4;
+  --measure: 66ch;       /* reading width */
+  /* space, 4 px base */
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px;
+  --radius: 2px;         /* quiet; chips and figures only */
+  --target: 24px;        /* minimum hit size */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --paper: #101820; --surface: #16202b; --ink: #e6e9ec; --ink-2: #b4bcc4; --ink-3: #9aa5b1;
+    --line: #2b3743; --line-2: #1f2a35; --accent: #e0895a; --accent-ink: #e8a07a; --focus: #5fa8f0;
+    --grade-measured: #4fb07a; --grade-documented: #3a88da; --grade-inferred: #d9a53a; --grade-contested: #b48ae8; --grade-insufficient: #9aa5b1;
+    --series-1: #3a88da; --series-2: #d66f2c; --series-3: #9f74d8; --series-4: #3ca27a;
+    --sequential-hue: #3a88da; --diverging-cool: #3a88da; --diverging-warm: #d66f2c; --diverging-mid: #5c6772;
+    --grid: #1f2a35; --axis: #9aa5b1;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #101820; --surface: #16202b; --ink: #e6e9ec; --ink-2: #b4bcc4; --ink-3: #9aa5b1;
+  --line: #2b3743; --line-2: #1f2a35; --accent: #e0895a; --accent-ink: #e8a07a; --focus: #5fa8f0;
+  --grade-measured: #4fb07a; --grade-documented: #3a88da; --grade-inferred: #d9a53a; --grade-contested: #b48ae8; --grade-insufficient: #9aa5b1;
+  --series-1: #3a88da; --series-2: #d66f2c; --series-3: #9f74d8; --series-4: #3ca27a;
+  --sequential-hue: #3a88da; --diverging-cool: #3a88da; --diverging-warm: #d66f2c; --diverging-mid: #5c6772;
+  --grid: #1f2a35; --axis: #9aa5b1;
+}
+
+
+/* base rules that follow from the tokens */
+body { background: var(--paper); color: var(--ink); font: var(--size-2)/var(--leading-read) var(--font-read); margin: 0; }
+h1, h2, h3 { font-family: var(--font-read); font-weight: 500; line-height: 1.15; margin: 0; }
+h1 { font-size: var(--size-5); letter-spacing: -0.01em; }
+h2 { font-size: var(--size-3); }
+p, li { max-width: var(--measure); }
+a { color: var(--accent-ink); text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.ui, table, figcaption, .chip, nav { font-family: var(--font-ui); font-size: var(--size-1); line-height: var(--leading-ui); font-variant-numeric: tabular-nums; }
+.chip { display: inline-block; font-size: var(--size-0); padding: 3px 8px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--ink-2); }
+.finding { border-left: 3px solid var(--line); padding: var(--s-2) var(--s-4); margin: var(--s-3) 0; }
+.finding[data-grade="measured"] { border-color: var(--grade-measured); }
+.finding[data-grade="documented"] { border-color: var(--grade-documented); }
+.finding[data-grade="inferred"] { border-color: var(--grade-inferred); }
+.finding[data-grade="contested"] { border-color: var(--grade-contested); }
+.finding[data-grade="insufficient"] { border-color: var(--grade-insufficient); }
+.finding .chip { font-weight: 600; color: var(--ink); }
+table { border-collapse: collapse; width: 100%; } th, td { text-align: left; padding: var(--s-2) var(--s-3); border-bottom: 1px solid var(--line-2); vertical-align: top; } th { color: var(--ink-2); font-weight: 600; }
+figure { margin: var(--s-5) 0; padding: var(--s-4); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow-x: auto; }
+figure svg { max-width: none; }
+@media (max-width: 640px) { h1 { font-size: var(--size-4); } body { font-size: 1.0625rem; } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

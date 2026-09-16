@@ -1,0 +1,34 @@
+---
+import Base from '../../layouts/Base.astro';
+import { loadAll, nameMap, recordPath, STATUS_LABEL } from '../../lib/content';
+export async function getStaticPaths() {
+  const { dimensions } = await loadAll();
+  return dimensions.map((d) => ({ params: { dimension: d.id }, props: { dim: d } }));
+}
+const { dim } = Astro.props;
+const all = await loadAll();
+const placeNames = nameMap(all.places);
+const records = all.records.filter((r) => r.data.dimension === dim.id && r.data.status !== 'draft');
+const questions = all.questions.filter((q) => q.data.record.dimension === dim.id && q.data.status !== 'answered');
+---
+<Base title={dim.data.name} description={dim.data.definition} current="freedoms">
+  <p class="crumbs"><a href="/freedoms/">Freedoms</a> / {dim.data.name}</p>
+  <h1>{dim.data.name}</h1>
+  <p class="lede">{dim.data.definition}</p>
+  {dim.data.not_covered.length > 0 && <p><strong>Not covered by this freedom:</strong> {dim.data.not_covered.join('; ')}.</p>}
+  <section class="section" aria-labelledby="h-measures">
+    <h2 id="h-measures">Measures that can stand for it</h2>
+    <ul class="plain">{dim.data.candidate_measures.map((m) => <li>{m.name} <span class="small muted">({m.source})</span></li>)}</ul>
+  </section>
+  <section class="section" aria-labelledby="h-records">
+    <h2 id="h-records">Records</h2>
+    {records.length ? (
+      <table><thead><tr><th scope="col">Place</th><th scope="col">Years</th><th scope="col">Measures</th></tr></thead>
+      <tbody>{records.map((r) => <tr><td><a href={recordPath(r.data.dimension, r.data.place)}>{placeNames.get(r.data.place)}</a></td><td>{r.data.period.from} to {r.data.period.to}</td><td>{r.data.measures.length}</td></tr>)}</tbody></table>
+    ) : <p class="muted">No Records yet for this freedom.</p>}
+  </section>
+  <section class="section" aria-labelledby="h-questions">
+    <h2 id="h-questions">Open questions in this freedom</h2>
+    {questions.length ? <ul class="qlist">{questions.map((q) => <li>{q.data.text} <span class="status">{STATUS_LABEL[q.data.status]}</span></li>)}</ul> : <p class="muted">None recorded.</p>}
+  </section>
+</Base>

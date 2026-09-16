@@ -1,0 +1,32 @@
+---
+import Base from '../../layouts/Base.astro';
+import { loadAll } from '../../lib/content';
+export async function getStaticPaths() {
+  const { datasets } = await loadAll();
+  return datasets.map((d) => ({ params: { slug: d.id }, props: { dataset: d } }));
+}
+const { dataset } = Astro.props;
+const all = await loadAll();
+const measures = all.measures.filter((m) => m.data.dataset === dataset.data.dataset_id);
+const licenseKnown = dataset.data.license.trim().toLowerCase() !== 'unknown';
+---
+<Base title={dataset.data.name} description={`Dataset: ${dataset.data.name}, ${dataset.data.publisher}.`} current="investigations">
+  <p class="crumbs">Dataset</p>
+  <h1>{dataset.data.name}</h1>
+  <dl class="facts">
+    <dt>Publisher</dt><dd>{dataset.data.publisher}</dd>
+    <dt>Link</dt><dd><a href={dataset.data.url}>{dataset.data.url}</a></dd>
+    <dt>Retrieved</dt><dd>{dataset.data.retrieved}</dd>
+    <dt>Years</dt><dd>{dataset.data.years.from} to {dataset.data.years.to}</dd>
+    <dt>Geography</dt><dd>{dataset.data.geography}</dd>
+    <dt>Format</dt><dd>{dataset.data.format}</dd>
+    <dt>SHA-256 of the raw file</dt><dd><code>{dataset.data.sha256}</code></dd>
+    <dt>License</dt><dd>{dataset.data.license}{licenseKnown ? '' : ' (downloads stay off until the license is known)'}</dd>
+    {dataset.data.notes && <><dt>Notes</dt><dd>{dataset.data.notes}</dd></>}
+  </dl>
+  <section class="section" aria-labelledby="h-measures">
+    <h2 id="h-measures">Measures derived</h2>
+    <ul class="plain">{measures.map((m) => <li>{m.data.name} <span class="small muted">(investigation <a href={`/investigations/${m.data.investigation}/`}>{m.data.investigation}</a>, cell {m.data.cell}; {m.data.rows.length} rows; the data table is on the Record and the investigation page)</span></li>)}</ul>
+    <p class="small muted">Processed-series downloads arrive when the license permits them (a later phase).</p>
+  </section>
+</Base>

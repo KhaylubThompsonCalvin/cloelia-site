@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+import { loadAll, recordPath, STATUS_LABEL } from '../lib/content';
+const all = await loadAll();
+const dimName = (id: string) => all.dimensions.find((d) => d.id === id)?.data.name ?? id;
+const placeName = (id: string) => all.places.find((p) => p.id === id)?.data.name ?? id;
+const qs = [...all.questions].sort((a, b) => b.data.asked.localeCompare(a.data.asked));
+---
+<Base title="Open questions" description="The public backlog: every question a Record could not yet answer, with its status." current="questions">
+  <h1>Open questions</h1>
+  <p>Questions are the site's public backlog. When one is taken up, its investigation appears here and in the <a href="/feed.xml">feed</a>.</p>
+  <table>
+    <thead><tr><th scope="col">Question</th><th scope="col">Record</th><th scope="col">Status</th></tr></thead>
+    <tbody>{qs.map((q) => <tr><td>{q.data.text}{q.data.note ? <span class="small muted"> {q.data.note}</span> : null}</td><td><a href={recordPath(q.data.record.dimension, q.data.record.place)}>{dimName(q.data.record.dimension)}, {placeName(q.data.record.place)}</a></td><td>{STATUS_LABEL[q.data.status]}{q.data.investigation ? <>: <a href={`/investigations/${q.data.investigation}/`}>{q.data.investigation}</a></> : null}</td></tr>)}</tbody>
+  </table>
+</Base>

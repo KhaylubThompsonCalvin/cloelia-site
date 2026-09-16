@@ -1,0 +1,57 @@
+---
+// The one layout. Every page: skip link, header with the five sections, main, footer.
+// Preview builds (PUBLIC_SITE_ENV=preview) add noindex and a banner; production adds nothing.
+import '../styles/tokens.css';
+import '../styles/base.css';
+export interface Props { title: string; description: string; current?: string }
+const { title, description, current = '' } = Astro.props;
+const isPreview = import.meta.env.PUBLIC_SITE_ENV === 'preview';
+const nav = [
+  ['/freedoms/', 'Freedoms', 'freedoms'],
+  ['/places/', 'Places', 'places'],
+  ['/investigations/', 'Investigations', 'investigations'],
+  ['/questions/', 'Questions', 'questions'],
+  ['/about/', 'About', 'about'],
+] as const;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} | CLOELIA.AI</title>
+    <meta name="description" content={description} />
+    {isPreview && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Public+Sans:wght@400;600&display=swap" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title="CLOELIA.AI" href="/feed.xml" />
+    <link rel="alternate" type="application/feed+json" title="CLOELIA.AI" href="/feed.json" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    {isPreview && <div class="preview-banner"><div class="wrap">Preview build. Not indexed. Content may be unverified.</div></div>}
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="/">CLOELIA.AI <small>Freedom, measured.</small></a>
+        <nav class="site-nav" aria-label="Primary">
+          <ul>
+            {nav.map(([href, label, key]) => (
+              <li><a href={href} aria-current={current === key ? 'page' : undefined}>{label}</a></li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main id="main" class="wrap" tabindex="-1">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="wrap">
+        <p>CLOELIA.AI measures how people's practical freedoms changed. Every number comes from a published investigation; every development from a source you can open.</p>
+        <p><a href="/about/">About and method</a> <a href="/changelog/">Changelog</a> <a href="/feed.xml">RSS</a> <a href="/feed.json">JSON feed</a></p>
+      </div>
+    </footer>
+  </body>
+</html>

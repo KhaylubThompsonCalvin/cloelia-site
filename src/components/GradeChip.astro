@@ -1,0 +1,9 @@
+---
+// The grade comes first in every finding, as text. Color is only ever a second cue.
+const LABELS: Record<string, string> = {
+  measured: 'Measured', documented: 'Documented', inferred: 'Inferred', contested: 'Contested', insufficient: 'Insufficient evidence',
+};
+export interface Props { grade: string }
+const { grade } = Astro.props;
+---
+<span class="chip grade" data-grade={grade}>{LABELS[grade] ?? grade}</span>

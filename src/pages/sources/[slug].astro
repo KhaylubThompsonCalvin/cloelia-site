@@ -1,0 +1,28 @@
+---
+import Base from '../../layouts/Base.astro';
+import { loadAll, recordPath } from '../../lib/content';
+export async function getStaticPaths() {
+  const { sources } = await loadAll();
+  return sources.map((s) => ({ params: { slug: s.id }, props: { source: s } }));
+}
+const { source } = Astro.props;
+const all = await loadAll();
+const usedBy = all.developments.filter((d) => d.data.sources.includes(source.id));
+const dimName = (id: string) => all.dimensions.find((d) => d.id === id)?.data.name ?? id;
+const placeName = (id: string) => all.places.find((p) => p.id === id)?.data.name ?? id;
+---
+<Base title={source.data.citation} description={`Source: ${source.data.citation}`} current="freedoms">
+  <p class="crumbs">Source</p>
+  <h1>{source.data.citation}</h1>
+  <p><span class="chip">{source.data.type === 'primary' ? 'Primary source' : 'Secondary source'}</span></p>
+  {source.data.passage && <section class="section" aria-labelledby="h-passage"><h2 id="h-passage">Passage used</h2><blockquote>{source.data.passage}</blockquote></section>}
+  <dl class="facts">
+    <dt>Where found</dt><dd>{source.data.where_found}</dd>
+    <dt>Retrieved</dt><dd>{source.data.retrieved}</dd>
+    {source.data.url && <><dt>Link</dt><dd><a href={source.data.url}>{source.data.url}</a></dd></>}
+  </dl>
+  <section class="section" aria-labelledby="h-used">
+    <h2 id="h-used">Used by</h2>
+    {usedBy.length ? <ul class="plain">{usedBy.map((d) => <li><a href={`${recordPath(d.data.record.dimension, d.data.record.place)}#dev-${d.id}`}>{d.data.date}: {d.data.text}</a> <span class="small muted">({dimName(d.data.record.dimension)}, {placeName(d.data.record.place)})</span></li>)}</ul> : <p class="muted">Not yet cited by a development.</p>}
+  </section>
+</Base>

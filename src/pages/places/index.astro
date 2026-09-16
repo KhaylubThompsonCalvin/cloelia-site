@@ -1,0 +1,16 @@
+---
+import Base from '../../layouts/Base.astro';
+import { loadAll, recordPath } from '../../lib/content';
+const all = await loadAll();
+const dimName = (id: string) => all.dimensions.find((d) => d.id === id)?.data.name ?? id;
+---
+<Base title="Places" description="Places with Records on CLOELIA.AI." current="places">
+  <h1>Places</h1>
+  <table>
+    <thead><tr><th scope="col">Place</th><th scope="col">Level</th><th scope="col">Records</th></tr></thead>
+    <tbody>{all.places.map((p) => {
+      const recs = all.records.filter((r) => r.data.place === p.id && r.data.status !== 'draft');
+      return <tr><td><a href={`/places/${p.id}/`}>{p.data.name}</a></td><td>{p.data.level}</td><td>{recs.length ? recs.map((r) => <a href={recordPath(r.data.dimension, r.data.place)}>{dimName(r.data.dimension)}</a>) : <span class="muted">none yet</span>}</td></tr>;
+    })}</tbody>
+  </table>
+</Base>

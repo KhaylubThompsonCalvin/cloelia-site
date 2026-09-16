@@ -1,0 +1,41 @@
+---
+// What followed: one measure, its chart (from the notebook), its definition line, and a data table.
+export interface Props { measure: any; chart?: any; placeNames: Map<string, string>; datasetName: string }
+const { measure: m, chart, placeNames, datasetName } = Astro.props;
+const years = ([...new Set(m.rows.map((r: any) => r.year as number))] as number[]).sort((a, b) => a - b);
+const geos = m.geographies as string[];
+const cell = (year: number, geo: string) => {
+  const r = m.rows.find((x: any) => x.year === year && x.geography === geo);
+  return r && r.value !== null ? String(r.value) : 'no value';
+};
+const gapsText = m.gaps.length ? `gaps: ${m.gaps.join(', ')}` : 'gaps: none';
+const changes = m.definition_changes.length
+  ? m.definition_changes.map((c: any) => `${c.year}: ${c.note}`).join('; ')
+  : 'none recorded';
+---
+<section class="measure" id={`measure-${m.slug}`} aria-labelledby={`measure-${m.slug}-title`}>
+  <h3 id={`measure-${m.slug}-title`}>{m.name}</h3>
+  {chart && (
+    <figure class="figure">
+      <img src={chart.public_path} alt={chart.description} width="740" height="240" />
+      <figcaption class="caption">{chart.caption}</figcaption>
+    </figure>
+  )}
+  <dl class="facts">
+    <dt>Definition</dt><dd>{m.definition}</dd>
+    <dt>Unit</dt><dd>{m.unit}</dd>
+    <dt>Population</dt><dd>{m.population}</dd>
+    <dt>Years</dt><dd>{m.years.from} to {m.years.to}; {gapsText}</dd>
+    <dt>Definition changes</dt><dd>{changes}</dd>
+    <dt>Dataset</dt><dd><a href={`/datasets/${m.dataset}/`}>{datasetName}</a></dd>
+    <dt>Produced by</dt><dd><a href={`/investigations/${m.investigation}/`}>Investigation {m.investigation}</a>, notebook cell {m.cell}</dd>
+  </dl>
+  <details class="data-table">
+    <summary>Data table</summary>
+    <table>
+      <thead><tr><th scope="col">Year</th>{geos.map((g) => <th scope="col">{placeNames.get(g) ?? g}</th>)}</tr></thead>
+      <tbody>{years.map((y) => <tr><th scope="row">{y}</th>{geos.map((g) => <td>{cell(y, g)}</td>)}</tr>)}</tbody>
+    </table>
+    <p class="caption">Values in {m.unit}. "No value" is a documented gap in the source; nothing is estimated.</p>
+  </details>
+</section>

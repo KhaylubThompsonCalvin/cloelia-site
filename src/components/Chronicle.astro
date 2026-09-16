@@ -1,0 +1,26 @@
+---
+// What happened: developments by date, each with its kind, its population line, and its source.
+const KIND: Record<string, string> = {
+  'measure-begins': 'Measure begins', law: 'Law', institution: 'Institution', practice: 'Practice',
+  technology: 'Technology', event: 'Event', 'definition-change': 'Definition change',
+};
+export interface Props { items: Array<{ id: string; data: any }>; populations: Map<string, string>; sources: Map<string, string> }
+const { items, populations, sources } = Astro.props;
+const sorted = [...items].sort((a, b) => String(a.data.date).localeCompare(String(b.data.date)));
+---
+<ol class="chronicle">
+  {sorted.map((d) => (
+    <li id={`dev-${d.id}`}>
+      <span class="when">{d.data.date}</span>
+      <div>
+        <span class="chip">{KIND[d.data.kind] ?? d.data.kind}</span> {d.data.text}
+        <div class="meta">
+          Applies to: {d.data.applies_to.map((p: string) => populations.get(p) ?? p).join(', ')}.
+          Source: {d.data.sources.map((s: string, i: number) => (
+            <><a href={`/sources/${s}/`}>{sources.get(s) ?? s}</a>{i < d.data.sources.length - 1 ? '; ' : ''}</>
+          ))}
+        </div>
+      </div>
+    </li>
+  ))}
+</ol>
