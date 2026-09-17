@@ -97,5 +97,7 @@ test('security headers from the Blueprint are served', async ({ request }) => {
   expect(h['x-content-type-options']).toBe('nosniff');
   expect(h['x-frame-options']).toBe('DENY');
   expect(h['content-security-policy-report-only']).toContain("script-src 'self'");
+  expect(h['content-security-policy-report-only']).toContain("font-src 'self';");
+  expect(h['content-security-policy-report-only']).not.toMatch(/googleapis|gstatic/);
   expect(h['strict-transport-security']).toContain('max-age=');
 });
